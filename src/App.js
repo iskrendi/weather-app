@@ -1,23 +1,28 @@
-import logo from './logo.svg';
+import { useState, useEffect } from 'react';
 import './App.css';
+import {
+  getData,
+  CurrentContainer,
+  HourlyContainer,
+} from './lib';
 
 function App() {
+  const [ weatherData, setWeatherData ] = useState({});
+
+  useEffect(() => {
+    getData()
+      .then((res) => {
+        if(res) {
+          setWeatherData({currently: res.currently, hourly: res.hourly});
+        }
+      })
+      .catch((e) => console.error(e));
+  }, []);
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CurrentContainer data={weatherData && weatherData.currently}/>
+      <HourlyContainer data={weatherData && weatherData.hourly}/>
     </div>
   );
 }
